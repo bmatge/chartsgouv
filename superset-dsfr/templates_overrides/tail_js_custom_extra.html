@@ -41,9 +41,14 @@
   nonce="{{ dsfr_nonce }}"
   src="{{ assets_prefix }}/static/assets/dsfr/dsfr.nomodule.min.js">
 </script>
-<!--
+{#
+  DSFR Chart : bundle ESM dist/DSFRChart/DSFRChart.js (autonome, définit bar-chart, line-chart,
+  pie-chart, table-chart, data-box, …). Ne pas charger le .umd.cjs : Superset le sert en
+  application/octet-stream et, avec X-Content-Type-Options: nosniff, le navigateur refuse
+  de l'exécuter. L'ancien chemin DSFRChart.umd.js répondait 404. Nonce : cf. ci-dessus.
+#}
 <script
-  defer
-    src="{{ assets_prefix }}/static/assets/dsfr-chart/DSFRChart.umd.js">
+  type="module"
+  nonce="{{ dsfr_nonce }}"
+  src="{{ assets_prefix }}/static/assets/dsfr-chart/dist/DSFRChart/DSFRChart.js">
 </script>
--->
