@@ -454,8 +454,69 @@ THEME_FONT_URL_ALLOWED_DOMAINS: list[str] = [
     "use.typekit.com",  # Adobe Fonts alternate (serves both CSS and fonts)
 ]
 # Pour plus d'informations: https://github.com/apache/superset/blob/886f52554539318521858fbcf493123c8c4199ef/superset/config.py#L940
-HTML_SANITIZATION = False
-HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {}
+# Filtre HTML réactivé (défaut Superset) : les zones Markdown et Handlebars passent par
+# rehype-sanitize avec le schéma GitHub, étendu ci-dessous pour les custom elements de
+# DSFR Chart et les classes DSFR (POC superset-dsfr-chart, jalon 2 ; cf. issue amont #29).
+HTML_SANITIZATION = True
+_DSFR_CHART_ELEMENTS = [
+    "bar-chart",
+    "bar-line-chart",
+    "line-chart",
+    "pie-chart",
+    "table-chart",
+    "data-box",
+    "gauge-chart",
+    "radar-chart",
+    "scatter-chart",
+    "map-chart",
+    "map-chart-reg",
+]
+_DSFR_CHART_ATTRIBUTES = [
+    "x",
+    "y",
+    "y-bar",
+    "y-line",
+    "name",
+    "data",
+    "value",
+    "label",
+    "title",
+    "unit-tooltip",
+    "unit-tooltip-bar",
+    "unit-tooltip-line",
+    "selected-palette",
+    "color",
+    "databox-type",
+    "databox-source",
+    "horizontal",
+    "stacked",
+    "fill",
+    "show-line",
+    "level",
+    "date",
+    "legend-position",
+    "x-min",
+    "x-max",
+    "y-min",
+    "y-max",
+    "aspect-ratio",
+]
+HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
+    # hast-util-sanitize préfixe par défaut les attributs id et name ("user-content-…") ;
+    # name est le libellé de série de DSFR Chart. Le front fusionne ce dictionnaire au schéma
+    # GitHub par lodash.merge, qui fusionne les listes index par index : "clobber": ["id"] ne
+    # retire donc pas "name" de la liste par défaut. On neutralise le préfixe à la place.
+    "clobberPrefix": "",
+    "tagNames": _DSFR_CHART_ELEMENTS + ["caption"],
+    "attributes": {
+        **{tag: _DSFR_CHART_ATTRIBUTES for tag in _DSFR_CHART_ELEMENTS},
+        # classes DSFR (fr-table, fr-grid-row…) sur les conteneurs du gabarit
+        "div": ["className"],
+        "table": ["className"],
+        "th": ["scope", "className"],
+        "td": ["className"],
+    },
+}
 TALISMAN_CONFIG = {
     "content_security_policy": {
         "base-uri": ["'self'"],
