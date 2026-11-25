@@ -24,13 +24,21 @@
   scripts to initialize google analytics, intercom, segment, etc.
 #}
 
+{#
+  Nonce CSP : TALISMAN_CONFIG utilise 'strict-dynamic' + nonce, un <script> sans nonce
+  est bloqué par le navigateur. csp_nonce() est le global Jinja de Flask-Talisman
+  (le même que superset/macros.html).
+#}
+{% set dsfr_nonce = csp_nonce() if csp_nonce is defined else '' %}
 <script
   type="module"
+  nonce="{{ dsfr_nonce }}"
   src="{{ assets_prefix }}/static/assets/dsfr/dsfr.module.min.js">
 </script>
 <script
   type="text/javascript"
   nomodule
+  nonce="{{ dsfr_nonce }}"
   src="{{ assets_prefix }}/static/assets/dsfr/dsfr.nomodule.min.js">
 </script>
 <!--
