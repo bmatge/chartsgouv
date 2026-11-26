@@ -1,0 +1,3 @@
+# Pilote PostgreSQL : l'image apache/superset 6.1 ne l'embarque plus, et docker-bootstrap.sh n'installe
+# l'extra [postgres] que pour l'application (pas pour worker ni beat), qui redémarraient en boucle.
+psycopg2-binary>=2.9
