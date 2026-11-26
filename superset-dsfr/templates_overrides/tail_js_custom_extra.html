@@ -52,3 +52,26 @@
   nonce="{{ dsfr_nonce }}"
   src="{{ assets_prefix }}/static/assets/dsfr-chart/dist/DSFRChart/DSFRChart.js">
 </script>
+{#
+  Thème sombre : Superset mémorise son mode dans localStorage (clé superset-theme-mode :
+  default | dark | system) sans rien poser sur le DOM. On le reflète sur data-fr-scheme,
+  que le JS du DSFR résout en data-fr-theme (clair / sombre). Le basculement dans le même
+  onglet ne déclenche pas l'événement storage : relecture périodique, peu coûteuse.
+#}
+<script nonce="{{ dsfr_nonce }}">
+  (function () {
+    var KEY = 'superset-theme-mode';
+    var root = document.documentElement;
+    function apply() {
+      var mode = null;
+      try { mode = window.localStorage.getItem(KEY); } catch (e) { mode = null; }
+      var scheme = mode === 'dark' ? 'dark' : (mode === 'system' ? 'system' : 'light');
+      if (root.getAttribute('data-fr-scheme') !== scheme) {
+        root.setAttribute('data-fr-scheme', scheme);
+      }
+    }
+    apply();
+    window.addEventListener('storage', apply);
+    window.setInterval(apply, 1000);
+  })();
+</script>
