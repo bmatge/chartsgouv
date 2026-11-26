@@ -51,6 +51,9 @@ THEME_DEFAULT = {
         "brandLogoMargin": "18px 0",
         "brandLogoHref": "/",
         "brandLogoHeight": "24px",
+        # Police : Marianne (déclarée par le CSS du DSFR). Sans ce token, la sous-arborescence
+        # des tuiles (.dashboard-chart) retombe sur la pile système d'Ant Design.
+        "fontFamily": "Marianne, arial, sans-serif",
         # Couleurs
         "colorPrimary": "#000091",
         "colorInfo": "#000091",
