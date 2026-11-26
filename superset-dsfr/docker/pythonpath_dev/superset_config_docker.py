@@ -470,6 +470,11 @@ THEME_FONT_URL_ALLOWED_DOMAINS: list[str] = [
 # rehype-sanitize avec le schéma GitHub, étendu ci-dessous pour les custom elements de
 # DSFR Chart et les classes DSFR (POC superset-dsfr-chart, jalon 2 ; cf. issue amont #29).
 HTML_SANITIZATION = True
+
+# Derrière un reverse proxy TLS (Traefik sur le lab) : Flask doit lire X-Forwarded-Proto/Host
+# pour générer des redirections https (login, API). Sans effet nuisible en local (un seul saut).
+ENABLE_PROXY_FIX = True
+PROXY_FIX_CONFIG = {"x_for": 1, "x_proto": 1, "x_host": 1, "x_port": 1, "x_prefix": 1}
 _DSFR_CHART_ELEMENTS = [
     "bar-chart",
     "bar-line-chart",
