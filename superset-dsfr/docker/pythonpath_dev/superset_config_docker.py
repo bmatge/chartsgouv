@@ -265,8 +265,17 @@ THEME_DARK = {
     **THEME_DEFAULT,
     "token": {
         **THEME_DEFAULT["token"],
+        # Le thème clair fixe colorTextBase à #3a3a3a : hérité tel quel, le texte reste
+        # foncé sur fond sombre. On repart d'une base claire, l'algorithme dark dérive le reste.
+        "colorTextBase": "#f6f6f6",
         # Darker selection color for dark mode
         "colorEditorSelection": "#5c4d1a",
+    },
+    # Les composants du thème clair figent colorText en gris foncé : on retire cette clé
+    # pour laisser l'algorithme dark calculer la couleur de texte.
+    "components": {
+        name: {key: value for key, value in conf.items() if key != "colorText"}
+        for name, conf in THEME_DEFAULT["components"].items()
     },
     "algorithm": "dark",
 }
